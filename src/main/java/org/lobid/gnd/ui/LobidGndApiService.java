@@ -59,11 +59,11 @@ public class LobidGndApiService {
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
-    private static final Cache<String, Mono<String>> labelCache =
+    public static final Cache<String, Mono<String>> labelCache =
             boundedCache(1_000_000, 1, TimeUnit.DAYS);
-    private static final Cache<String, Mono<GndEntityResult>> entityCache =
+    public static final Cache<String, Mono<GndEntityResult>> entityCache =
             boundedCache(20_000, 1, TimeUnit.HOURS);
-    private static final Cache<String, Mono<Map<String, Object>>> searchCache =
+    public static final Cache<String, Mono<Map<String, Object>>> searchCache =
             boundedCache(20_000, 1, TimeUnit.HOURS);
 
     private HttpClient httpClient =
@@ -102,7 +102,11 @@ public class LobidGndApiService {
     }
 
     private static <T> Cache<String, Mono<T>> boundedCache(int size, int time, TimeUnit unit) {
-        return Caffeine.newBuilder().maximumSize(size).expireAfterWrite(time, unit).build();
+        return Caffeine.newBuilder()
+                .maximumSize(size)
+                .expireAfterWrite(time, unit)
+                .recordStats()
+                .build();
     }
 
     private Mono<GndEntityResult> entityOrRedirect(GndJsonResult result) {
