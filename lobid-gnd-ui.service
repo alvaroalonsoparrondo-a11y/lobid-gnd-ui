@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 User=root
-ExecStart=/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Dspring.profiles.active=production -jar /opt/lobid-gnd-ui.jar
+ExecStart=/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Dspring.profiles.active=production -XX:+ExitOnOutOfMemoryError -jar /opt/lobid-gnd-ui.jar
 Restart=always
 StandardOutput=journal
 StandardError=journal+console
